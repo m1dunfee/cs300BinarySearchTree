@@ -86,6 +86,7 @@ public:
 BinarySearchTree::BinarySearchTree() {
     // FixMe (1): initialize housekeeping variables
     //root is equal to nullptr
+	root = nullptr;
 }
 
 /**
@@ -94,6 +95,7 @@ BinarySearchTree::BinarySearchTree() {
 BinarySearchTree::~BinarySearchTree() {
     //FixMe (2)
     // recurse from root deleting every node
+
 }
 
 /**
