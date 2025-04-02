@@ -1,0 +1,29 @@
+# Compiled object files
+*.o
+*.obj
+
+# Compiled libraries
+*.lib
+*.a
+*.so
+*.dll
+*.dylib
+
+# Executable files
+*.exe
+*.out
+*.app
+
+# Build directories (if using a build system like CMake)
+build/
+cmake-build-*/
+
+# VS Code settings folder
+.vscode/
+
+# Temporary files
+*.tmp
+*.log
+
+# Backup files
+*~
