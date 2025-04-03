@@ -68,6 +68,7 @@ private:
     void postOrder(Node* node);
     void preOrder(Node* node);
     Node* removeNode(Node* node, string bidId);
+    void destroy(Node* node);
 
 public:
     BinarySearchTree();
@@ -95,7 +96,19 @@ BinarySearchTree::BinarySearchTree() {
 BinarySearchTree::~BinarySearchTree() {
     //FixMe (2)
     // recurse from root deleting every node
+    destroy(root); //cant recusivly delete without changing the function definition or creating a new function..
+}
 
+/**
+* Destructor helper
+*/
+void BinarySearchTree::destroy(Node* node) {
+    //filo to left leaf delete, then sibling, then parent... < > ^ 
+    if (node != nullptr) {
+        destroy(node->left);
+        destroy(node->right);
+        delete node;
+    }
 }
 
 /**
@@ -104,6 +117,7 @@ BinarySearchTree::~BinarySearchTree() {
 void BinarySearchTree::InOrder() {
     // FixMe (3a): In order root
     // call inOrder fuction and pass root 
+    inOrder(root);
 }
 
 /**
@@ -112,6 +126,7 @@ void BinarySearchTree::InOrder() {
 void BinarySearchTree::PostOrder() {
     // FixMe (4a): Post order root
     // postOrder root
+    postOrder(root);
 }
 
 /**
@@ -120,9 +135,8 @@ void BinarySearchTree::PostOrder() {
 void BinarySearchTree::PreOrder() {
     // FixMe (5a): Pre order root
     // preOrder root
+    preOrder(root);
 }
-
-
 
 /**
  * Insert a bid
@@ -132,7 +146,14 @@ void BinarySearchTree::Insert(Bid bid) {
     // if root equarl to null ptr
       // root is equal to new node bid
     // else
-      // add Node root and bid
+      // add Node root and bid (what langauge was this originally written in, chinese?)
+    if (root == nullptr) {
+        root = new Node(bid);
+    }
+    else {
+        addNode(root, bid);
+    }
+
 }
 
 /**
@@ -141,6 +162,7 @@ void BinarySearchTree::Insert(Bid bid) {
 void BinarySearchTree::Remove(string bidId) {
     // FIXME (7a) Implement removing a bid from the tree
     // remove node root bidID
+    root = removeNode(root, bidId);
 }
 
 /**
@@ -155,8 +177,23 @@ Bid BinarySearchTree::Search(string bidId) {
 
         // if bid is smaller than current node then traverse left
         // else larger so traverse right
-    Bid bid;
-    return bid;
+    Node* cur = root;
+    while (cur != nullptr && cur->bid.bidId != bidId) {
+        if (bidId < cur->bid.bidId) {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+    if (cur != nullptr) {
+        return cur->bid;
+    }
+    else {
+        return Bid(); //this line im not a big fan of. I rather check for null, but the syntax is throwing a fit and time is time.
+    }
+
 }
 
 /**
@@ -176,6 +213,23 @@ void BinarySearchTree::addNode(Node* node, Bid bid) {
             // this node becomes right
         //else
             // recurse down the left node
+    Node* cur = node;
+    if (bid.bidId < cur->bid.bidId) {
+        if (cur->left == nullptr) {
+            cur->left = new Node(bid);
+        }
+        else {
+            addNode(cur->left, bid);
+        }
+    }
+    else {
+        if (cur->right == nullptr) {
+            cur->right = new Node(bid);
+        }
+        else {
+            addNode(cur->right, bid);
+        }
+    }
 }
 void BinarySearchTree::inOrder(Node* node) {
       // FixMe (3b): Pre order root
@@ -183,6 +237,18 @@ void BinarySearchTree::inOrder(Node* node) {
       //InOrder not left
       //output bidID, title, amount, fund
       //InOder right
+
+      //this part make me realize how much I could refactor my code for readability, while the structure can be helpful, it also creates a lot of vertical space.
+      // in the future I might try a refactor on this code where I use one line for single statment ifs and just not use else when not needed. 
+      // I think there is an arguement for both, but I would like to see it. For now I will keep it the same for uniformity.
+    if (node == nullptr) {
+        return;
+    }
+    else {
+        inOrder(node->left);
+        cout << node->bid.bidId << " | " << node->bid.title << " | " << node->bid.amount << " | " << node->bid.fund << endl;
+        inOrder(node->right);
+    }
 }
 void BinarySearchTree::postOrder(Node* node) {
       // FixMe (4b): Pre order root
@@ -190,7 +256,14 @@ void BinarySearchTree::postOrder(Node* node) {
       //postOrder left
       //postOrder right
       //output bidID, title, amount, fund
-
+    if (node == nullptr) {
+        return;
+    }
+    else {
+        postOrder(node->left);
+        postOrder(node->right);
+        cout << node->bid.bidId << " | " << node->bid.title << " | " << node->bid.amount << " | " << node->bid.fund << endl;
+    }
 }
 
 void BinarySearchTree::preOrder(Node* node) {
@@ -198,7 +271,18 @@ void BinarySearchTree::preOrder(Node* node) {
       //if node is not equal to null ptr
       //output bidID, title, amount, fund
       //postOrder left
-      //postOrder right      
+      //postOrder right     
+      
+    //these three print functions dont feel dry. I rather have a loop and a sequence string. I suppse that would add to time complexity through... 3 functions at  O(1) or 1 funcion at O(1)x3 or less.
+    //We are only suppose to care about the greatest funtion though and not the leading coeficients right? so 3xO(1) is still just O(1), right?
+    if (node == nullptr) {
+        return;
+    }
+    else {
+        cout << node->bid.bidId << " | " << node->bid.title << " | " << node->bid.amount << " | " << node->bid.fund << endl;
+        postOrder(node->left);
+        postOrder(node->right);
+    }
 }
 
 /**
@@ -223,6 +307,40 @@ Node* BinarySearchTree::removeNode(Node* node, string bidId) {
     // make node bid (right) equal to temp bid (left)
     // remove right node using recursive call
     // return node
+
+    if (node == nullptr) {
+        return nullptr;
+    }
+    if (bidId < node->bid.bidId) {
+        node->left = removeNode(node->left, bidId);
+    }
+    else if (bidId > node->bid.bidId) {
+        node->right = removeNode(node->right, bidId);
+    }
+    else {
+        if (node->left == nullptr && node->right == nullptr) {
+            delete node;
+            return nullptr;
+        }
+        else if (node->left == nullptr) {
+            Node* temp = node->right;
+            delete node;
+            return temp;
+        }
+        else if (node->right == nullptr) {
+            Node* temp = node->left;
+            delete node;
+            return temp;
+        }
+        else {
+            Node* temp = node->left;
+            while (temp->left != nullptr) {
+                temp = temp->left;
+            }
+            node->bid = temp->bid;
+            node->right = removeNode(node->right, temp->bid.bidId);
+        }
+    }
 	return node;
 }
 
