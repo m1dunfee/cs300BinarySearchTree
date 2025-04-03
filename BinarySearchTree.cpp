@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : BinarySearchTree.cpp
-// Author      : Your name
+// Author      : Matthew Dunfee
 // Version     : 1.0
 // Copyright   : Copyright � 2023 SNHU COCE
 // Description : Lab 5-2 Binary Search Tree
@@ -85,8 +85,6 @@ public:
  * Default constructor
  */
 BinarySearchTree::BinarySearchTree() {
-    // FixMe (1): initialize housekeeping variables
-    //root is equal to nullptr
 	root = nullptr;
 }
 
@@ -94,9 +92,8 @@ BinarySearchTree::BinarySearchTree() {
  * Destructor
  */
 BinarySearchTree::~BinarySearchTree() {
-    //FixMe (2)
-    // recurse from root deleting every node
-    destroy(root); //cant recusivly delete without changing the function definition or creating a new function..
+    //Call helper for streamlined api interface and encapsulation
+    destroy(root);
 }
 
 /**
@@ -115,8 +112,7 @@ void BinarySearchTree::destroy(Node* node) {
  * Traverse the tree in order
  */
 void BinarySearchTree::InOrder() {
-    // FixMe (3a): In order root
-    // call inOrder fuction and pass root 
+    //Call helper for streamlined api interface and encapsulation
     inOrder(root);
 }
 
@@ -124,8 +120,7 @@ void BinarySearchTree::InOrder() {
  * Traverse the tree in post-order
  */
 void BinarySearchTree::PostOrder() {
-    // FixMe (4a): Post order root
-    // postOrder root
+    //Call helper for streamlined api interface and encapsulation
     postOrder(root);
 }
 
@@ -133,8 +128,7 @@ void BinarySearchTree::PostOrder() {
  * Traverse the tree in pre-order
  */
 void BinarySearchTree::PreOrder() {
-    // FixMe (5a): Pre order root
-    // preOrder root
+    //Call helper for streamlined api interface and encapsulation
     preOrder(root);
 }
 
@@ -142,11 +136,7 @@ void BinarySearchTree::PreOrder() {
  * Insert a bid
  */
 void BinarySearchTree::Insert(Bid bid) {
-    // FIXME (6a) Implement inserting a bid into the tree
-    // if root equarl to null ptr
-      // root is equal to new node bid
-    // else
-      // add Node root and bid (what langauge was this originally written in, chinese?)
+    // if Tree is empty create root else call helper
     if (root == nullptr) {
         root = new Node(bid);
     }
@@ -160,8 +150,7 @@ void BinarySearchTree::Insert(Bid bid) {
  * Remove a bid
  */
 void BinarySearchTree::Remove(string bidId) {
-    // FIXME (7a) Implement removing a bid from the tree
-    // remove node root bidID
+    //Call helper for streamlined api interface and encapsulation
     root = removeNode(root, bidId);
 }
 
@@ -169,14 +158,7 @@ void BinarySearchTree::Remove(string bidId) {
  * Search for a bid
  */
 Bid BinarySearchTree::Search(string bidId) {
-    // FIXME (8) Implement searching the tree for a bid
-    // set current node equal to root
-
-    // keep looping downwards until bottom reached or matching bidId found
-        // if match found, return current bid
-
-        // if bid is smaller than current node then traverse left
-        // else larger so traverse right
+    //Returns the bid or a new bid object.
     Node* cur = root;
     while (cur != nullptr && cur->bid.bidId != bidId) {
         if (bidId < cur->bid.bidId) {
@@ -191,7 +173,8 @@ Bid BinarySearchTree::Search(string bidId) {
         return cur->bid;
     }
     else {
-        return Bid(); //this line im not a big fan of. I rather check for null, but the syntax is throwing a fit and time is time.
+        return Bid(); //this line im not a big fan of returning new object. I rather return a -1, 0, or other token for fail to fine. 
+                      // I find that makes more readable and maintainable code. but I didn't make the definitions.
     }
 
 }
@@ -203,16 +186,7 @@ Bid BinarySearchTree::Search(string bidId) {
  * @param bid Bid to be added
  */
 void BinarySearchTree::addNode(Node* node, Bid bid) {
-    // FIXME (6b) Implement inserting a bid into the tree
-    // if node is larger then add to left
-        // if no left node
-            // this node becomes left
-        // else recurse down the left node
-    // else
-        // if no right node
-            // this node becomes right
-        //else
-            // recurse down the left node
+    //recusive step for the ideal leaf and add it.
     Node* cur = node;
     if (bid.bidId < cur->bid.bidId) {
         if (cur->left == nullptr) {
@@ -232,12 +206,6 @@ void BinarySearchTree::addNode(Node* node, Bid bid) {
     }
 }
 void BinarySearchTree::inOrder(Node* node) {
-      // FixMe (3b): Pre order root
-      //if node is not equal to null ptr
-      //InOrder not left
-      //output bidID, title, amount, fund
-      //InOder right
-
       //this part make me realize how much I could refactor my code for readability, while the structure can be helpful, it also creates a lot of vertical space.
       // in the future I might try a refactor on this code where I use one line for single statment ifs and just not use else when not needed. 
       // I think there is an arguement for both, but I would like to see it. For now I will keep it the same for uniformity.
@@ -251,11 +219,6 @@ void BinarySearchTree::inOrder(Node* node) {
     }
 }
 void BinarySearchTree::postOrder(Node* node) {
-      // FixMe (4b): Pre order root
-      //if node is not equal to null ptr
-      //postOrder left
-      //postOrder right
-      //output bidID, title, amount, fund
     if (node == nullptr) {
         return;
     }
@@ -267,12 +230,6 @@ void BinarySearchTree::postOrder(Node* node) {
 }
 
 void BinarySearchTree::preOrder(Node* node) {
-      // FixMe (5b): Pre order root
-      //if node is not equal to null ptr
-      //output bidID, title, amount, fund
-      //postOrder left
-      //postOrder right     
-      
     //these three print functions dont feel dry. I rather have a loop and a sequence string. I suppse that would add to time complexity through... 3 functions at  O(1) or 1 funcion at O(1)x3 or less.
     //We are only suppose to care about the greatest funtion though and not the leading coeficients right? so 3xO(1) is still just O(1), right?
     if (node == nullptr) {
@@ -289,25 +246,6 @@ void BinarySearchTree::preOrder(Node* node) {
  * Remove a bid from some node (recursive)
  */
 Node* BinarySearchTree::removeNode(Node* node, string bidId) {
-    // FIXME (7b) Implement removing a bid from the tree
-    // if node = nullptr return node
-    // (otherwise recurse down the left subtree)
-    // check for match and if so, remove left node using recursive call 
-    // (otherwise recurse down the right subtree)
-    // check for match and if so, remove right node using recursive call
-    // (otherwise no children so node is a leaf node)
-    // if left node = nullptr && right node = nullptr delete node 
-    // (otherwise check one child to the left)
-    // if left node != nullptr && right node = nullptr delete node 
-    // (otherwise check one child to the right)
-    // if left node = nullptr && right node != nullptr delete node
-    // (otherwise more than one child so find the minimum)
-    // create temp node to right
-    // while left node is not nullptr keep moving temp left
-    // make node bid (right) equal to temp bid (left)
-    // remove right node using recursive call
-    // return node
-
     if (node == nullptr) {
         return nullptr;
     }
